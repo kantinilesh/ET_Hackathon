@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aifin — Financial Intelligence</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --paper: #f5f1eb;
+            --paper2: #ede9e1;
+            --ink: #1a1714;
+            --ink2: #2e2a25;
+            --ink3: #4a4540;
+            --muted: #8a8078;
+            --rule: #d4cec4;
+            --amber: #c4720a;
+            --amber-bg: #fdf3e3;
+            --red: #b83232;
+            --red-bg: #fdf0f0;
+            --green: #2a7a4b;
+            --green-bg: #edf7f2;
+            --slate: #3d5a73;
+            --slate-bg: #eef3f8;
+            --card: #ffffff;
+            --card2: #faf8f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            height: 52px;
+            background: var(--ink2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            border-bottom: 2px solid var(--amber);
+        }
+
+        .logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.1rem;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-q {
+            color: var(--amber);
+            font-style: italic;
+        }
+
+        .logo-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.58rem;
+            color: #888;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border-left: 1px solid #444;
+            padding-left: 0.5rem;
+            margin-left: 0.25rem;
+        }
+
+        .topnav {
+            display: flex;
+        }
+
+        .tnav-btn {
+            height: 52px;
+            padding: 0 1.1rem;
+            background: transparent;
+            border: none;
+            border-right: 1px solid #333;
+            color: #aaa;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .tnav-btn:first-child {
+            border-left: 1px solid #333;
+        }
+
+        .tnav-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .tnav-btn.active {
+            background: var(--amber);
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .topright {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.72rem;
+            color: #888;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .live-ind {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #7dba8f;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #7dba8f;
+            animation: blink 2s infinite;
+            display: inline-block;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .avatar-sm {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            background: var(--amber);
+            color: var(--ink);
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* PAGES */
+        .page {
+            display: none;
+            padding-top: 52px;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        #landing.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TICKER */
+        .ticker {
+            background: var(--ink);
+            color: #ccc;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            padding: 0.35rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+            border-bottom: 1px solid #333;
+        }
+
+        .ticker-inner {
+            display: inline-block;
+            animation: scroll 32s linear infinite;
+            padding-left: 100%;
+        }
+
+        .ticker-inner span {
+            margin: 0 2rem;
+        }
+
+        .tu {
+            color: #7dba8f;
+        }
+
+        .td {
+            color: #e07070;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0)
+            }
+
+            100% {
+                transform: translateX(-100%)
+            }
+        }
+
+        /* HERO */
+        .hero-wrap {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .hero-left {
+            padding: 4rem 3.5rem;
+            border-right: 1px solid var(--rule);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .eyebrow::before {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--amber);
+        }
+
+        .hero-h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-h1 em {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--amber);
+        }
+
+        .hero-sub {
+            font-size: 0.92rem;
+            color: var(--ink3);
+            line-height: 1.8;
+            font-weight: 300;
+            max-width: 480px;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn-fill {
+            padding: 0.7rem 1.75rem;
+            background: var(--ink2);
+            color: #fff;
+            border: none;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-fill:hover {
+            background: var(--amber);
+            color: var(--ink);
+        }
+
+        .btn-outline {
+            padding: 0.7rem 1.75rem;
+            background: transparent;
+            color: var(--ink3);
+            border: 1px solid var(--rule);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--ink3);
+            color: var(--ink);
+        }
+
+        /* HERO RIGHT */
+        .hero-right {
+            display: flex;
+            flex-direction: column;
+            background: var(--card2);
+        }
+
+        .metric-block {
+            padding: 1.2rem 1.75rem;
+            border-bottom: 1px solid var(--rule);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .metric-block:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .metric-val {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .metric-delta {
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-top: 0.3rem;
+        }
+
+        .du {
+            color: var(--green);
+        }
+
+        .dd {
+            color: var(--red);
+        }
+
+        .metric-sub {
+            font-size: 0.68rem;
+            color: var(--muted);
+            font-family: 'IBM Plex Mono', monospace;
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+
+        /* FEATURES */
+        .features-wrap {
+            display: grid;
+            grid-template-columns: 190px 1fr;
+            border-top: 1px solid var(--rule);
+        }
+
+        .features-sidebar {
+            padding: 2rem 1.25rem;
+            border-right: 1px solid var(--rule);
+            background: var(--card2);
+        }
+
+        .fs-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .fn-item {
+            padding: 0.55rem 0;
+            font-size: 0.8rem;
+            color: var(--ink3);
+            border-bottom: 1px solid var(--rule);
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .fn-item:hover {
+            color: var(--amber);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .feat-card {
+            padding: 1.75rem 1.5rem;
+            border-right: 1px solid var(--rule);
+            border-bottom: 1px solid var(--rule);
+            cursor: pointer;
+            transition: background 0.18s;
+            background: var(--card);
+        }
+
+        .feat-card:nth-child(3n) {
+            border-right: none;
+        }
+
+        .feat-card:hover {
+            background: var(--amber-bg);
+        }
+
+        .feat-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--muted);
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.06em;
+        }
+
+        .feat-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .feat-desc {
+            font-size: 0.78rem;
+            color: var(--ink3);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .feat-arrow {
+            margin-top: 1rem;
+            font-size: 0.7rem;
+            color: var(--amber);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        /* DASH */
+        .dash-wrap {
+            display: grid;
+            grid-template-columns: 195px 1fr;
+            min-height: calc(100vh - 52px);
+        }
+
+        .left-rail {
+            background: var(--card2);
+            border-right: 1px solid var(--rule);
+            padding: 1.25rem 0;
+            position: sticky;
+            top: 52px;
+            height: calc(100vh - 52px);
+            overflow-y: auto;
+        }
+
+        .rail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .rail-head {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 1.1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .rail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 1.1rem;
+            font-size: 0.78rem;
+            color: var(--ink3);
+            cursor: pointer;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+        }
+
+        .rail-item:hover {
+            background: var(--paper2);
+            color: var(--ink);
+        }
+
+        .rail-item.active {
+            background: var(--amber-bg);
+            color: var(--amber);
+            border-left-color: var(--amber);
+            font-weight: 600;
+        }
+
+        .rail-badge {
+            margin-left: auto;
+            background: var(--amber-bg);
+            color: var(--amber);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.12rem 0.4rem;
+            border-radius: 2px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .main-content {
+            padding: 1.75rem 2rem;
+            background: var(--paper);
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--ink);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-kicker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.2rem;
+        }
+
+        .page-h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .page-date {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--muted);
+        }
+
+        /* KPI ROW */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            border: 1px solid var(--rule);
+            margin-bottom: 1.25rem;
+        }
+
+        .kpi-cell {
+            padding: 1.1rem 1.25rem;
+            border-right: 1px solid var(--rule);
+            background: var(--card);
+        }
+
+        .kpi-cell:last-child {
+            border-right: none;
+        }
+
+        .kpi-l {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.45rem;
+        }
+
+        .kpi-v {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            line-height: 1;
+            margin-bottom: 0.35rem;
+        }
+
+        .kpi-d {
+            font-size: 0.68rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        /* CHARTS */
+        .charts-strip {
+            display: grid;
+            grid-template-columns: 7fr 5fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--rule);
+        }
+
+        .card-head {
+            padding: 0.8rem 1.1rem;
+            border-bottom: 1px solid var(--rule);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .card-sub {
+            font-size: 0.68rem;
+            color: var(--muted);
+            margin-top: 0.12rem;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .card-body {
+            padding: 1.1rem;
+        }
+
+        .tab-row {
+            display: flex;
+        }
+
+        .tab-btn {
+            padding: 0.28rem 0.7rem;
+            font-size: 0.68rem;
+            font-weight: 500;
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: 0.05em;
+            background: transparent;
+            border: 1px solid var(--rule);
+            border-right: none;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .tab-btn:last-child {
+            border-right: 1px solid var(--rule);
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: var(--ink);
+            color: #fff;
+        }
+
+        /* TABLE */
+        .tx-table {
+            background: var(--card);
+            border: 1px solid var(--rule);
+            margin-bottom: 1.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0.6rem 0.9rem;
+            border-bottom: 1px solid var(--rule);
+            font-weight: 500;
+            background: var(--card2);
+        }
+
+        td {
+            padding: 0.7rem 0.9rem;
+            font-size: 0.78rem;
+            border-bottom: 1px solid var(--rule);
+            vertical-align: middle;
+            color: var(--ink3);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--paper2);
+        }
+
+        .tx-merchant {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .tx-sub {
+            font-size: 0.65rem;
+            color: var(--muted);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-family: 'IBM Plex Mono', monospace;
+            border-radius: 2px;
+        }
+
+        .tag-ok {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+
+        .tag-warn {
+            background: var(--amber-bg);
+            color: var(--amber);
+        }
+
+        .tag-flag {
+            background: var(--red-bg);
+            color: var(--red);
+        }
+
+        .tag-slate {
+            background: var(--slate-bg);
+            color: var(--slate);
+        }
+
+        /* BOTTOM */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .risk-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .risk-row {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .risk-lbl {
+            font-size: 0.73rem;
+            color: var(--ink3);
+            width: 135px;
+            flex-shrink: 0;
+        }
+
+        .risk-track {
+            flex: 1;
+            height: 5px;
+            background: var(--rule);
+        }
+
+        .risk-fill {
+            height: 100%;
+            transition: width 1s ease;
+        }
+
+        .risk-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            width: 28px;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* COPILOT */
+        .copilot-wrap {
+            background: var(--card);
+            border: 1px solid var(--rule);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .msgs {
+            flex: 1;
+            padding: 0.9rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            max-height: 230px;
+            overflow-y: auto;
+        }
+
+        .msg-u {
+            align-self: flex-end;
+            max-width: 85%;
+            background: var(--ink2);
+            color: #fff;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+        .msg-a {
+            align-self: flex-start;
+            max-width: 90%;
+            background: var(--amber-bg);
+            border-left: 3px solid var(--amber);
+            padding: 0.6rem 0.9rem;
+            font-size: 0.78rem;
+            line-height: 1.55;
+            color: var(--ink);
+        }
+
+        .msg-ts {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.58rem;
+            color: var(--muted);
+            align-self: flex-start;
+        }
+
+        .chat-input-row {
+            display: flex;
+            border-top: 1px solid var(--rule);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.65rem 0.9rem;
+            border: none;
+            background: var(--paper);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.78rem;
+            color: var(--ink);
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: var(--muted);
+        }
+
+        .chat-send {
+            padding: 0.65rem 1.1rem;
+            background: var(--ink2);
+            color: #fff;
+            border: none;
+            border-left: 1px solid var(--rule);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: background 0.15s;
+        }
+
+        .chat-send:hover {
+            background: var(--amber);
+            color: var(--ink);
+        }
+
+        /* RISK PAGE */
+        .risk-top {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .score-box {
+            background: var(--card);
+            border: 1px solid var(--rule);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .big-score {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--amber);
+            line-height: 1;
+            margin: 0.75rem 0 0.25rem;
+        }
+
+        .score-grade {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .score-meter-bg {
+            width: 100%;
+            height: 7px;
+            background: var(--rule);
+            position: relative;
+            margin-bottom: 0.3rem;
+        }
+
+        .score-meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green) 0%, var(--amber) 60%, var(--red) 100%);
+            width: 67%;
+            position: relative;
+        }
+
+        .score-meter-fill::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -3px;
+            width: 2px;
+            height: 13px;
+            background: var(--ink);
+        }
+
+        .narrative-box {
+            background: var(--card);
+            border: 1px solid var(--rule);
+            padding: 1.5rem;
+        }
+
+        .narrative-head {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            border-bottom: 1px solid var(--rule);
+            padding-bottom: 0.65rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .narrative-text {
+            font-size: 0.82rem;
+            line-height: 1.8;
+            color: var(--ink3);
+        }
+
+        .narrative-text strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .shap-section {
+            background: var(--card);
+            border: 1px solid var(--rule);
+            margin-bottom: 1.25rem;
+        }
+
+        .shap-rows {
+            padding: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .shap-row {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .shap-f {
+            font-size: 0.75rem;
+            color: var(--ink3);
+            width: 185px;
+            flex-shrink: 0;
+        }
+
+        .shap-track {
+            flex: 1;
+            height: 5px;
+            background: var(--rule);
+        }
+
+        .shap-bar {
+            height: 100%;
+        }
+
+        .shap-v {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            width: 50px;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--card);
+            border: 1px solid var(--rule);
+        }
+
+        .comp-cell {
+            padding: 1.1rem 1.25rem;
+            border-right: 1px solid var(--rule);
+        }
+
+        .comp-cell:last-child {
+            border-right: none;
+        }
+
+        .comp-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .comp-val {
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .comp-sub {
+            font-size: 0.68rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* RESEARCH */
+        .research-grid {
+            display: grid;
+            grid-template-columns: 1fr 290px;
+            gap: 1rem;
+        }
+
+        .doc-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .doc-row {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.75rem 1rem;
+            background: var(--card);
+            border: 1px solid var(--rule);
+            border-bottom: none;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .doc-row:last-child {
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .doc-row:hover {
+            background: var(--amber-bg);
+        }
+
+        .doc-row.sel {
+            background: var(--amber-bg);
+            border-left: 3px solid var(--amber);
+        }
+
+        .doc-ico {
+            width: 32px;
+            height: 32px;
+            background: var(--card2);
+            border: 1px solid var(--rule);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .doc-nm {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .doc-mt {
+            font-size: 0.65rem;
+            color: var(--muted);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .sent-tag {
+            margin-left: auto;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.12rem 0.45rem;
+            letter-spacing: 0.04em;
+            border-radius: 2px;
+        }
+
+        .findings {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .finding {
+            padding: 0.9rem 1rem;
+            background: var(--card);
+            border: 1px solid var(--rule);
+            border-left: 3px solid var(--slate);
+        }
+
+        .finding.risk {
+            border-left-color: var(--amber);
+        }
+
+        .finding-text {
+            font-size: 0.8rem;
+            color: var(--ink3);
+            line-height: 1.65;
+        }
+
+        .finding-src {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--muted);
+            margin-top: 0.35rem;
+        }
+
+        .finding.risk .finding-src {
+            color: var(--amber);
+        }
+
+        .ask-box {
+            background: var(--card);
+            border: 1px solid var(--rule);
+            padding: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .ask-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.65rem;
+        }
+
+        .ask-row {
+            display: flex;
+        }
+
+        .ask-input {
+            flex: 1;
+            padding: 0.6rem 0.85rem;
+            border: 1px solid var(--rule);
+            border-right: none;
+            background: var(--paper);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.78rem;
+            color: var(--ink);
+            outline: none;
+        }
+
+        .ask-input::placeholder {
+            color: var(--muted);
+        }
+
+        .ask-btn {
+            padding: 0.6rem 1rem;
+            background: var(--ink);
+            color: #fff;
+            border: none;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .ask-btn:hover {
+            background: var(--amber);
+            color: var(--ink);
+        }
+
+        .ask-answer {
+            margin-top: 0.9rem;
+            padding: 0.8rem 0.9rem;
+            background: var(--amber-bg);
+            border-left: 3px solid var(--amber);
+            font-size: 0.78rem;
+            line-height: 1.65;
+            color: var(--ink3);
+            display: none;
+        }
+
+        /* INSURANCE */
+        .claim-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border: 1px solid var(--rule);
+            background: var(--card);
+            margin-bottom: 1.25rem;
+        }
+
+        .c-cell {
+            padding: 1.1rem 1.25rem;
+            border-right: 1px solid var(--rule);
+        }
+
+        .c-cell:last-child {
+            border-right: none;
+        }
+
+        .claims-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .claim {
+            background: var(--card);
+            border: 1px solid var(--rule);
+        }
+
+        .claim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0.9rem 1.1rem 0.7rem;
+            border-bottom: 1px solid var(--rule);
+            background: var(--card2);
+        }
+
+        .claim-id {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+            margin-bottom: 0.25rem;
+        }
+
+        .claim-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .claim-amt {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .claim-amt-label {
+            font-size: 0.62rem;
+            color: var(--muted);
+            font-family: 'IBM Plex Mono', monospace;
+            text-align: right;
+            margin-top: 0.12rem;
+        }
+
+        .claim-body {
+            padding: 1.1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .claim-icon-big {
+            width: 48px;
+            height: 48px;
+            background: var(--card2);
+            border: 1px solid var(--rule);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+
+        .claim-detail {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-bottom: 0.65rem;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .verdict {
+            background: var(--amber-bg);
+            border-left: 3px solid var(--amber);
+            padding: 0.7rem 0.9rem;
+            font-size: 0.78rem;
+            line-height: 1.65;
+            color: var(--ink3);
+        }
+
+        .verdict strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--paper2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--rule);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .main-content>* {
+            animation: fadeIn 0.25s ease both;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <div class="logo" onclick="showPage('landing');setActive(0)">
+            <span class="logo-q"></span>Aifin
+            <span class="logo-tag">Financial Intelligence</span>
+        </div>
+        <div class="topnav">
+            <button class="tnav-btn active" onclick="showPage('landing');setActive(0)">Overview</button>
+            <button class="tnav-btn" onclick="showPage('dashboard');setActive(1)">Dashboard</button>
+            <button class="tnav-btn" onclick="showPage('risk');setActive(2)">Risk</button>
+            <button class="tnav-btn" onclick="showPage('research');setActive(3)">Research</button>
+            <button class="tnav-btn" onclick="showPage('insurance');setActive(4)">Insurance</button>
+        </div>
+        <div class="topright">
+            <div class="live-ind"><span class="live-dot"></span> Live</div>
+            <span>|</span><span>Nilesh K.</span>
+            <div class="avatar-sm">NK</div>
+        </div>
+    </div>
+
+    <!-- ═══ LANDING ═══ -->
+    <div class="page active" id="landing">
+        <div class="ticker">
+            <div class="ticker-inner">
+                <span>NIFTY 50 <b class="tu">22,847.80 ▲ +142.35 (+0.63%)</b></span>
+                <span>SENSEX <b class="tu">75,392.14 ▲ +480.12 (+0.64%)</b></span>
+                <span>USD/INR <b class="td">87.42 ▼ −0.18</b></span>
+                <span>HDFC BANK <b class="tu">1,742.30 ▲ +18.60 (+1.08%)</b></span>
+                <span>INFOSYS <b class="tu">1,924.15 ▲ +34.80 (+1.84%)</b></span>
+                <span>RBI REPO RATE <b style="color:#ccc">6.50%</b></span>
+                <span>10Y G-SEC <b class="td">6.82% ▼ −0.04</b></span>
+                <span>GOLD MCX <b class="tu">₹83,240/10g ▲ +320</b></span>
+                <span>CRUDE OIL <b class="td">$72.14 ▼ −0.88</b></span>
+                <span>NIFTY 50 <b class="tu">22,847.80 ▲ +142.35 (+0.63%)</b></span>
+                <span>SENSEX <b class="tu">75,392.14 ▲ +480.12 (+0.64%)</b></span>
+            </div>
+        </div>
+        <div class="hero-wrap">
+            <div class="hero-left">
+                <div class="eyebrow">AI-Native Financial Intelligence Platform</div>
+                <h1 class="hero-h1">Every financial decision<br>should <em>explain itself.</em></h1>
+                <p class="hero-sub">Aifin brings risk scoring, fraud detection, insurance automation, and document
+                    research into one platform — with every output backed by plain-language explanations your team can
+                    audit.</p>
+                <div class="cta-row">
+                    <button class="btn-fill" onclick="showPage('dashboard');setActive(1)">Open Dashboard</button>
+                    <button class="btn-outline" onclick="showPage('risk');setActive(2)">View Risk Report</button>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="metric-block">
+                    <div>
+                        <div class="metric-label">Net Worth — Arjun R.</div>
+                        <div class="metric-val">₹18.4L</div>
+                        <div class="metric-delta du">▲ 3.2% this month</div>
+                    </div>
+                    <div class="metric-sub">Feb 2026</div>
+                </div>
+                <div class="metric-block">
+                    <div>
+                        <div class="metric-label">Composite Risk Score</div>
+                        <div class="metric-val" style="color:var(--amber)">67 / 100</div>
+                        <div class="metric-delta" style="color:var(--amber)">Medium · 1 active flag</div>
+                    </div>
+                    <div class="metric-sub">Review needed</div>
+                </div>
+                <div class="metric-block">
+                    <div>
+                        <div class="metric-label">Claims Processed (30d)</div>
+                        <div class="metric-val">₹1.26L</div>
+                        <div class="metric-delta du">2 approved · 1 pending</div>
+                    </div>
+                    <div class="metric-sub">4.2h avg</div>
+                </div>
+                <div class="metric-block">
+                    <div>
+                        <div class="metric-label">Research Documents Indexed</div>
+                        <div class="metric-val">5</div>
+                        <div class="metric-delta" style="color:var(--slate)">RAG ready · 91% confidence</div>
+                    </div>
+                    <div class="metric-sub">Updated today</div>
+                </div>
+                <div class="metric-block">
+                    <div>
+                        <div class="metric-label">Fraud Detection Accuracy</div>
+                        <div class="metric-val" style="color:var(--green)">98.3%</div>
+                        <div class="metric-delta du">12K transactions today</div>
+                    </div>
+                    <div class="metric-sub">340ms avg decision</div>
+                </div>
+            </div>
+        </div>
+        <div class="features-wrap">
+            <div class="features-sidebar">
+                <div class="fs-label">Platform Modules</div>
+                <div class="fn-item" onclick="showPage('dashboard');setActive(1)">Financial Copilot</div>
+                <div class="fn-item" onclick="showPage('risk');setActive(2)">Risk Narrator</div>
+                <div class="fn-item" onclick="showPage('research');setActive(3)">Research Engine</div>
+                <div class="fn-item" onclick="showPage('insurance');setActive(4)">Insurance AI</div>
+                <div class="fn-item">Fraud Detection</div>
+                <div class="fn-item">Compliance Reports</div>
+            </div>
+            <div class="features-grid">
+                <div class="feat-card" onclick="showPage('dashboard');setActive(1)">
+                    <div class="feat-num">01</div>
+                    <div class="feat-title">Financial Copilot</div>
+                    <div class="feat-desc">Ask questions in plain language. The AI pulls data from risk models,
+                        transaction history, and market feeds to give you one coherent answer — not a list of links.
+                    </div>
+                    <div class="feat-arrow">→ Open Dashboard</div>
+                </div>
+                <div class="feat-card" onclick="showPage('risk');setActive(2)">
+                    <div class="feat-num">02</div>
+                    <div class="feat-title">Risk Decision Narrator</div>
+                    <div class="feat-desc">Every risk score comes with a plain-language explanation built from SHAP
+                        values. Auditable by compliance teams, readable by customers. No black box.</div>
+                    <div class="feat-arrow">→ View Risk Report</div>
+                </div>
+                <div class="feat-card" onclick="showPage('research');setActive(3)">
+                    <div class="feat-num">03</div>
+                    <div class="feat-title">Autonomous Research</div>
+                    <div class="feat-desc">Upload earnings calls, filings, and bulletins. The RAG engine indexes them
+                        and surfaces key risks, sentiment shifts, and source-cited findings in seconds.</div>
+                    <div class="feat-arrow">→ Research Desk</div>
+                </div>
+                <div class="feat-card" onclick="showPage('insurance');setActive(4)">
+                    <div class="feat-num">04</div>
+                    <div class="feat-title">Smart Insurance Claims</div>
+                    <div class="feat-desc">Computer vision reads damage photos. NLP parses policy documents. The system
+                        calculates eligibility and references exact clauses — no manual cross-checking needed.</div>
+                    <div class="feat-arrow">→ View Claims</div>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-num">05</div>
+                    <div class="feat-title">Fraud Detection</div>
+                    <div class="feat-desc">Anomaly models flag unusual patterns in near real-time. Each alert carries a
+                        confidence score and a behavioural comparison to the user's own baseline — not just a threshold
+                        breach.</div>
+                    <div class="feat-arrow">→ 1 active alert</div>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-num">06</div>
+                    <div class="feat-title">Compliance Reports</div>
+                    <div class="feat-desc">Generate monthly risk summaries, model drift audits, and fraud trend reports
+                        on demand. Output is formatted for RBI audit standards and board presentations.</div>
+                    <div class="feat-arrow">→ Generate PDF</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="page" id="dashboard">
+        <div class="dash-wrap">
+            <div class="left-rail">
+                <div class="rail-section">
+                    <div class="rail-head">Main</div>
+                    <div class="rail-item active">📊 Overview</div>
+                    <div class="rail-item">💳 Transactions <span class="rail-badge">3</span></div>
+                    <div class="rail-item">📈 Portfolio</div>
+                    <div class="rail-item">🎯 Budget</div>
+                </div>
+                <div class="rail-section">
+                    <div class="rail-head">Intelligence</div>
+                    <div class="rail-item" onclick="showPage('risk');setActive(2)">⚠ Risk Score</div>
+                    <div class="rail-item">🔎 Fraud Alerts <span class="rail-badge">1</span></div>
+                    <div class="rail-item" onclick="showPage('research');setActive(3)">📋 Research</div>
+                    <div class="rail-item" onclick="showPage('insurance');setActive(4)">🧾 Insurance</div>
+                </div>
+                <div class="rail-section">
+                    <div class="rail-head">Admin</div>
+                    <div class="rail-item">⚙ Settings</div>
+                    <div class="rail-item">📥 Reports</div>
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="page-header">
+                    <div>
+                        <div class="page-kicker">Good afternoon, Arjun · Feb 22, 2026</div>
+                        <div class="page-h1">Financial Overview</div>
+                    </div>
+                    <div class="page-date">15:42 IST &nbsp;·&nbsp; <span class="live-dot"
+                            style="background:var(--green);width:6px;height:6px;border-radius:50%;animation:blink 2s infinite;"></span>
+                        Live</div>
+                </div>
+
+                <div class="kpi-row">
+                    <div class="kpi-cell">
+                        <div class="kpi-l">Net Worth</div>
+                        <div class="kpi-v">₹18.4L</div>
+                        <div class="kpi-d du">▲ 3.2% this month</div>
+                    </div>
+                    <div class="kpi-cell">
+                        <div class="kpi-l">Monthly Spend</div>
+                        <div class="kpi-v">₹42,810</div>
+                        <div class="kpi-d" style="color:var(--amber)">▲ 8.1% over budget</div>
+                    </div>
+                    <div class="kpi-cell">
+                        <div class="kpi-l">Savings Rate</div>
+                        <div class="kpi-v">34.2%</div>
+                        <div class="kpi-d du">▲ 2.4 pts vs Jan</div>
+                    </div>
+                    <div class="kpi-cell">
+                        <div class="kpi-l">Risk Score</div>
+                        <div class="kpi-v" style="color:var(--amber)">67</div>
+                        <div class="kpi-d" style="color:var(--amber);cursor:pointer"
+                            onclick="showPage('risk');setActive(2)">Medium · Review →</div>
+                    </div>
+                </div>
+
+                <div class="charts-strip">
+                    <div class="card">
+                        <div class="card-head">
+                            <div>
+                                <div class="card-title">Cash Flow — 2026</div>
+                                <div class="card-sub">Income vs Expenses, 6-month view</div>
+                            </div>
+                            <div class="tab-row">
+                                <button class="tab-btn active">6M</button>
+                                <button class="tab-btn">1Y</button>
+                                <button class="tab-btn">3Y</button>
+                            </div>
+                        </div>
+                        <div class="card-body"><canvas id="cashflow" height="175"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-head">
+                            <div>
+                                <div class="card-title">Spend by Category</div>
+                                <div class="card-sub">February 2026</div>
+                            </div>
+                        </div>
+                        <div class="card-body"><canvas id="spend" height="175"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="tx-table">
+                    <div class="card-head">
+                        <div>
+                            <div class="card-title">Recent Transactions</div>
+                            <div class="card-sub">Last 7 days · 28 total this month</div>
+                        </div>
+                        <button class="btn-outline" style="padding:0.3rem 0.9rem;font-size:0.72rem">View all</button>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Merchant</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="tx-merchant">BigBasket</div>
+                                <div class="tx-sub">TXN8834-A</div>
+                            </td>
+                            <td style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted)">22 Feb
+                            </td>
+                            <td><span class="tag tag-slate">Groceries</span></td>
+                            <td style="font-family:'IBM Plex Mono',monospace">−₹3,240</td>
+                            <td><span class="tag tag-ok">Cleared</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="tx-merchant">BESCOM Utility</div>
+                                <div class="tx-sub">TXN8835-B</div>
+                            </td>
+                            <td style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted)">21 Feb
+                            </td>
+                            <td><span class="tag tag-slate">Utilities</span></td>
+                            <td style="font-family:'IBM Plex Mono',monospace">−₹1,850</td>
+                            <td><span class="tag tag-ok">Cleared</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="tx-merchant">Salary — Infosys Ltd.</div>
+                                <div class="tx-sub">TXN8836-C</div>
+                            </td>
+                            <td style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted)">20 Feb
+                            </td>
+                            <td><span class="tag tag-ok">Income</span></td>
+                            <td style="font-family:'IBM Plex Mono',monospace;color:var(--green)">+₹95,000</td>
+                            <td><span class="tag tag-ok">Cleared</span></td>
+                        </tr>
+                        <tr style="background:var(--red-bg)">
+                            <td>
+                                <div class="tx-merchant" style="color:var(--red)">Unknown Merchant ⚠</div>
+                                <div class="tx-sub">TXN8847-X · flagged by fraud model</div>
+                            </td>
+                            <td style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted)">19 Feb
+                            </td>
+                            <td><span class="tag tag-flag">Unclassified</span></td>
+                            <td style="font-family:'IBM Plex Mono',monospace;color:var(--red)">−₹12,000</td>
+                            <td><span class="tag tag-flag">Flagged</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="tx-merchant">Apollo Pharmacy</div>
+                                <div class="tx-sub">TXN8848-D</div>
+                            </td>
+                            <td style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted)">18 Feb
+                            </td>
+                            <td><span class="tag tag-slate">Healthcare</span></td>
+                            <td style="font-family:'IBM Plex Mono',monospace">−₹2,100</td>
+                            <td><span class="tag tag-warn">Processing</span></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="bottom-grid">
+                    <div class="card">
+                        <div class="card-head">
+                            <div>
+                                <div class="card-title">Risk Breakdown</div>
+                                <div class="card-sub">Composite 67 / 100 · Medium</div>
+                            </div>
+                            <button class="btn-outline" style="padding:0.3rem 0.9rem;font-size:0.7rem"
+                                onclick="showPage('risk');setActive(2)">Full report →</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="risk-rows">
+                                <div class="risk-row">
+                                    <div class="risk-lbl">Credit Health</div>
+                                    <div class="risk-track">
+                                        <div class="risk-fill" style="width:78%;background:var(--green)"></div>
+                                    </div>
+                                    <div class="risk-num" style="color:var(--green)">78</div>
+                                </div>
+                                <div class="risk-row">
+                                    <div class="risk-lbl">Liquidity Ratio</div>
+                                    <div class="risk-track">
+                                        <div class="risk-fill" style="width:54%;background:var(--amber)"></div>
+                                    </div>
+                                    <div class="risk-num" style="color:var(--amber)">54</div>
+                                </div>
+                                <div class="risk-row">
+                                    <div class="risk-lbl">Transaction Risk</div>
+                                    <div class="risk-track">
+                                        <div class="risk-fill" style="width:41%;background:var(--red)"></div>
+                                    </div>
+                                    <div class="risk-num" style="color:var(--red)">41</div>
+                                </div>
+                                <div class="risk-row">
+                                    <div class="risk-lbl">Savings Stability</div>
+                                    <div class="risk-track">
+                                        <div class="risk-fill" style="width:82%;background:var(--green)"></div>
+                                    </div>
+                                    <div class="risk-num" style="color:var(--green)">82</div>
+                                </div>
+                                <div class="risk-row">
+                                    <div class="risk-lbl">Debt Exposure</div>
+                                    <div class="risk-track">
+                                        <div class="risk-fill" style="width:62%;background:var(--amber)"></div>
+                                    </div>
+                                    <div class="risk-num" style="color:var(--amber)">62</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="copilot-wrap">
+                        <div class="card-head">
+                            <div>
+                                <div class="card-title">Financial Copilot</div>
+                                <div class="card-sub">Ask anything about your account</div>
+                            </div>
+                            <div class="live-ind" style="font-size:0.68rem"><span class="live-dot"></span> Online</div>
+                        </div>
+                        <div class="msgs" id="msgs">
+                            <div class="msg-u">Am I financially safe this month?</div>
+                            <div class="msg-a">Your position is broadly stable — savings rate at 34.2% and credit health
+                                at 78 are both solid. However, there's one item that needs your attention: a ₹12,000
+                                charge from an unrecognised merchant on Feb 19 (TXN8847-X) has been flagged. Resolving
+                                it would bring your risk score down by roughly 11 points. Your spend is also running
+                                8.1% over budget, mostly in discretionary categories.</div>
+                            <div class="msg-ts">15:38 · Aifin Copilot</div>
+                        </div>
+                        <div class="chat-input-row">
+                            <input class="chat-input" id="chatIn" placeholder="Ask about your finances…"
+                                onkeydown="if(event.key==='Enter')sendMsg()">
+                            <button class="chat-send" onclick="sendMsg()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ RISK ═══ -->
+    <div class="page" id="risk">
+        <div class="main-content" style="max-width:1040px;margin:0 auto">
+            <div class="page-header">
+                <div>
+                    <div class="page-kicker">AI-Powered Explainability · RBI-compliant format</div>
+                    <div class="page-h1">Risk Intelligence Report</div>
+                </div>
+                <div style="display:flex;gap:0.75rem;align-items:center">
+                    <div class="page-date">Updated 15:30 IST</div>
+                    <button class="btn-fill" style="padding:0.45rem 1.1rem;font-size:0.76rem">Export PDF</button>
+                </div>
+            </div>
+            <div class="risk-top">
+                <div class="score-box">
+                    <div
+                        style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)">
+                        Composite Risk Score</div>
+                    <div class="big-score">67</div>
+                    <div class="score-grade">Medium Risk</div>
+                    <div class="score-meter-bg">
+                        <div class="score-meter-fill"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;width:100%;margin-top:0.25rem">
+                        <span
+                            style="font-size:0.58rem;font-family:'IBM Plex Mono',monospace;color:var(--green)">Low</span>
+                        <span
+                            style="font-size:0.58rem;font-family:'IBM Plex Mono',monospace;color:var(--muted)">Medium</span>
+                        <span
+                            style="font-size:0.58rem;font-family:'IBM Plex Mono',monospace;color:var(--red)">High</span>
+                    </div>
+                    <div style="margin-top:1.1rem;text-align:left;width:100%">
+                        <div class="risk-rows">
+                            <div class="risk-row">
+                                <div class="risk-lbl" style="width:110px;font-size:0.7rem">Credit Health</div>
+                                <div class="risk-track">
+                                    <div class="risk-fill" style="width:78%;background:var(--green)"></div>
+                                </div>
+                                <div class="risk-num" style="color:var(--green)">78</div>
+                            </div>
+                            <div class="risk-row">
+                                <div class="risk-lbl" style="width:110px;font-size:0.7rem">Liquidity</div>
+                                <div class="risk-track">
+                                    <div class="risk-fill" style="width:54%;background:var(--amber)"></div>
+                                </div>
+                                <div class="risk-num" style="color:var(--amber)">54</div>
+                            </div>
+                            <div class="risk-row">
+                                <div class="risk-lbl" style="width:110px;font-size:0.7rem">Tx Risk</div>
+                                <div class="risk-track">
+                                    <div class="risk-fill" style="width:41%;background:var(--red)"></div>
+                                </div>
+                                <div class="risk-num" style="color:var(--red)">41</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="narrative-box">
+                    <div class="narrative-head">AI Narrative — Generated from SHAP values · Feb 22, 2026</div>
+                    <div class="narrative-text">Your composite risk score of <strong>67 (Medium)</strong> this month is
+                        elevated primarily by two factors. First, a <strong>₹12,000 transaction from an unidentified
+                            merchant on Feb 19</strong> (TXN8847-X) triggered an anomaly flag — this single event is the
+                        largest contributor to your elevated score. Second, your <strong>liquidity ratio has dropped 12%
+                            compared to last quarter</strong>, reflecting the increased SIP commitment you set in
+                        January.<br><br>On the positive side, your <strong>credit health remains strong at 78</strong>,
+                        income is stable, and six months of consistent savings is a meaningful risk offset. Resolving
+                        TXN8847-X — either confirming the charge or filing a dispute — would improve your overall score
+                        by approximately <strong>11 points</strong>, moving you into the low-medium band.</div>
+                </div>
+            </div>
+            <div class="shap-section">
+                <div class="card-head">
+                    <div>
+                        <div class="card-title">Feature Contributions (SHAP Values)</div>
+                        <div class="card-sub">Positive values increase risk · Negative values reduce risk</div>
+                    </div>
+                    <canvas id="riskTrend" height="52" width="240"></canvas>
+                </div>
+                <div class="shap-rows">
+                    <div class="shap-row">
+                        <div class="shap-f">Flagged Transaction (TXN8847-X)</div>
+                        <div class="shap-track">
+                            <div class="shap-bar" style="width:88%;background:var(--red)"></div>
+                        </div>
+                        <div class="shap-v" style="color:var(--red)">+0.34</div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-f">Liquidity Decline (−12%)</div>
+                        <div class="shap-track">
+                            <div class="shap-bar" style="width:65%;background:var(--amber)"></div>
+                        </div>
+                        <div class="shap-v" style="color:var(--amber)">+0.21</div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-f">Spend vs Budget (+8.1%)</div>
+                        <div class="shap-track">
+                            <div class="shap-bar" style="width:48%;background:var(--amber)"></div>
+                        </div>
+                        <div class="shap-v" style="color:var(--amber)">+0.16</div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-f">Income Stability (Salary regular)</div>
+                        <div class="shap-track">
+                            <div class="shap-bar" style="width:80%;background:var(--green)"></div>
+                        </div>
+                        <div class="shap-v" style="color:var(--green)">−0.25</div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-f">Credit Score (CIBIL 748)</div>
+                        <div class="shap-track">
+                            <div class="shap-bar" style="width:75%;background:var(--green)"></div>
+                        </div>
+                        <div class="shap-v" style="color:var(--green)">−0.22</div>
+                    </div>
+                    <div class="shap-row">
+                        <div class="shap-f">Savings Streak (6 months)</div>
+                        <div class="shap-track">
+                            <div class="shap-bar" style="width:58%;background:var(--green)"></div>
+                        </div>
+                        <div class="shap-v" style="color:var(--green)">−0.18</div>
+                    </div>
+                </div>
+            </div>
+            <div class="compliance-grid">
+                <div class="comp-cell">
+                    <div class="comp-label">KYC Status</div>
+                    <div class="comp-val" style="color:var(--green)">✓ Verified</div>
+                    <div class="comp-sub">Last checked Feb 1, 2026</div>
+                </div>
+                <div class="comp-cell">
+                    <div class="comp-label">AML Screening</div>
+                    <div class="comp-val" style="color:var(--green)">✓ No Hits</div>
+                    <div class="comp-sub">28 transactions screened</div>
+                </div>
+                <div class="comp-cell">
+                    <div class="comp-label">Suspicious Activity</div>
+                    <div class="comp-val" style="color:var(--amber)">1 Pending Review</div>
+                    <div class="comp-sub">TXN8847-X · Feb 19, 2026</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ RESEARCH ═══ -->
+    <div class="page" id="research">
+        <div class="main-content" style="max-width:1040px;margin:0 auto">
+            <div class="page-header">
+                <div>
+                    <div class="page-kicker">RAG-Powered Document Intelligence</div>
+                    <div class="page-h1">Research Desk</div>
+                </div>
+                <button class="btn-fill" style="padding:0.45rem 1.1rem;font-size:0.76rem">+ Upload Document</button>
+            </div>
+            <div class="research-grid">
+                <div>
+                    <div class="card" style="margin-bottom:1rem">
+                        <div class="card-head">
+                            <div>
+                                <div class="card-title">Infosys Q3 FY26 Earnings Call</div>
+                                <div class="card-sub">Uploaded Feb 18 · 48 pages · Confidence 91% · Sentiment: <span
+                                        style="color:var(--green);font-weight:600">Positive</span></div>
+                            </div>
+                            <span class="tag tag-ok">Active</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="findings">
+                                <div class="finding">
+                                    <div class="finding-text">Revenue grew 8.7% year-on-year in constant currency,
+                                        driven by strong deal wins in financial services and energy verticals. Large
+                                        deal TCV reached $2.4B, the highest in six quarters.</div>
+                                    <div class="finding-src">p. 4 · Management Commentary</div>
+                                </div>
+                                <div class="finding risk">
+                                    <div class="finding-text">Management flagged continued softness in European
+                                        discretionary spending and cautioned that macro headwinds could suppress Q4 deal
+                                        closures by 10–15%.</div>
+                                    <div class="finding-src">⚠ Risk Flag · p. 12 · CFO Statement</div>
+                                </div>
+                                <div class="finding">
+                                    <div class="finding-text">Operating margin improved to 21.3%, aided by lower
+                                        subcontracting costs and rupee depreciation. Headcount addition was modest at
+                                        2,100, signalling selective hiring.</div>
+                                    <div class="finding-src">p. 7 · Financial Highlights</div>
+                                </div>
+                                <div class="finding risk">
+                                    <div class="finding-text">Attrition stabilised at 13.7% TTM but remains elevated
+                                        relative to pre-2023 levels. Management expects further normalisation in H1
+                                        FY27.</div>
+                                    <div class="finding-src">⚠ Risk Flag · p. 21 · HR Metrics</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ask-box">
+                        <div class="ask-label">Ask about this document</div>
+                        <div class="ask-row">
+                            <input class="ask-input" id="askIn"
+                                placeholder="e.g. What are the key risks in this report?"
+                                onkeydown="if(event.key==='Enter')askDoc()">
+                            <button class="ask-btn" onclick="askDoc()">Ask</button>
+                        </div>
+                        <div class="ask-answer" id="askAns"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card">
+                        <div class="card-head">
+                            <div class="card-title">Indexed Documents</div>
+                        </div>
+                        <div class="doc-list">
+                            <div class="doc-row sel">
+                                <div class="doc-ico">📄</div>
+                                <div>
+                                    <div class="doc-nm">Infosys Q3 FY26 Earnings</div>
+                                    <div class="doc-mt">48 pg · Feb 18</div>
+                                </div><span class="sent-tag tag-ok">+ve</span>
+                            </div>
+                            <div class="doc-row">
+                                <div class="doc-ico">📋</div>
+                                <div>
+                                    <div class="doc-nm">HDFC Bank Annual Report</div>
+                                    <div class="doc-mt">184 pg · Jan 30</div>
+                                </div><span class="sent-tag tag-slate">Neutral</span>
+                            </div>
+                            <div class="doc-row">
+                                <div class="doc-ico">📰</div>
+                                <div>
+                                    <div class="doc-nm">RBI Monetary Policy Feb 26</div>
+                                    <div class="doc-mt">12 pg · Feb 6</div>
+                                </div><span class="sent-tag tag-slate">Neutral</span>
+                            </div>
+                            <div class="doc-row">
+                                <div class="doc-ico">⚠</div>
+                                <div>
+                                    <div class="doc-nm">SEBI Fraud Alert Bulletin</div>
+                                    <div class="doc-mt">8 pg · Feb 10</div>
+                                </div><span class="sent-tag tag-flag">−ve</span>
+                            </div>
+                            <div class="doc-row">
+                                <div class="doc-ico">📊</div>
+                                <div>
+                                    <div class="doc-nm">Nifty 50 Q4 Outlook Note</div>
+                                    <div class="doc-mt">22 pg · Feb 15</div>
+                                </div><span class="sent-tag tag-ok">+ve</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ INSURANCE ═══ -->
+    <div class="page" id="insurance">
+        <div class="main-content" style="max-width:940px;margin:0 auto">
+            <div class="page-header">
+                <div>
+                    <div class="page-kicker">CV + NLP Claim Automation</div>
+                    <div class="page-h1">Insurance Claims</div>
+                </div>
+                <button class="btn-fill" style="padding:0.45rem 1.1rem;font-size:0.76rem">+ File New Claim</button>
+            </div>
+            <div class="claim-strip">
+                <div class="c-cell">
+                    <div class="kpi-l">Active Claims</div>
+                    <div class="kpi-v">3</div>
+                </div>
+                <div class="c-cell">
+                    <div class="kpi-l">Approved (30d)</div>
+                    <div class="kpi-v" style="color:var(--green)">₹1.26L</div>
+                </div>
+                <div class="c-cell">
+                    <div class="kpi-l">Avg. Processing</div>
+                    <div class="kpi-v">4.2h</div>
+                </div>
+                <div class="c-cell">
+                    <div class="kpi-l">AI Accuracy</div>
+                    <div class="kpi-v" style="color:var(--slate)">96.1%</div>
+                </div>
+            </div>
+            <div class="claims-list">
+                <div class="claim">
+                    <div class="claim-header">
+                        <div>
+                            <div class="claim-id">CLM-2026-00341 · ICICI Lombard · Motor Comprehensive</div>
+                            <div class="claim-title">Vehicle Accident — Honda City KA 01 AB 4421</div>
+                            <div style="margin-top:0.35rem"><span class="tag tag-ok">AI Approved</span></div>
+                        </div>
+                        <div>
+                            <div class="claim-amt" style="color:var(--green)">₹43,200</div>
+                            <div class="claim-amt-label">Approved amount</div>
+                        </div>
+                    </div>
+                    <div class="claim-body">
+                        <div class="claim-icon-big">🚗</div>
+                        <div style="flex:1">
+                            <div class="claim-detail">Filed Feb 20, 2026 · 4 damage photos · Policy doc uploaded</div>
+                            <div class="verdict">Damage photo analysis indicates <strong>rear-end collision, severity
+                                    Category B</strong> (moderate). Policy parse found coverage under Section 3.1(b).
+                                Repair estimate ₹48,000 is within the ₹2L own-damage limit. <strong>Eligible: ₹43,200
+                                    after 10% depreciation</strong> per clause 8.4.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="claim">
+                    <div class="claim-header">
+                        <div>
+                            <div class="claim-id">CLM-2026-00298 · Star Health · Health Floater</div>
+                            <div class="claim-title">Hospitalisation — Apollo Hospital, Bangalore</div>
+                            <div style="margin-top:0.35rem"><span class="tag tag-ok">AI Approved</span></div>
+                        </div>
+                        <div>
+                            <div class="claim-amt" style="color:var(--green)">₹82,500</div>
+                            <div class="claim-amt-label">Approved in full</div>
+                        </div>
+                    </div>
+                    <div class="claim-body">
+                        <div class="claim-icon-big">🏥</div>
+                        <div style="flex:1">
+                            <div class="claim-detail">Filed Feb 14, 2026 · Discharge summary + itemised bill uploaded
+                            </div>
+                            <div class="verdict">Diagnosis ICD-10 J18.9 (pneumonia) is <strong>covered under Section
+                                    4.2</strong>. Room category (General Ward) within policy limits. Total bill ₹82,500
+                                eligible in full. Pre-authorisation obtained (Auth No. STH-44821) — <strong>no co-pay
+                                    applicable</strong>.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="claim">
+                    <div class="claim-header">
+                        <div>
+                            <div class="claim-id">CLM-2026-00412 · HDFC ERGO · Home Protect</div>
+                            <div class="claim-title">Home Burglary — Whitefield Residence, Bangalore</div>
+                            <div style="margin-top:0.35rem"><span class="tag tag-warn">Under Review</span></div>
+                        </div>
+                        <div>
+                            <div class="claim-amt" style="color:var(--amber)">Pending</div>
+                            <div class="claim-amt-label">Est. ₹1.15 – 1.30L</div>
+                        </div>
+                    </div>
+                    <div class="claim-body">
+                        <div class="claim-icon-big">🏠</div>
+                        <div style="flex:1">
+                            <div class="claim-detail">Filed Feb 22, 2026 · FIR: CR No. 0041/2026, Whitefield PS · 14
+                                items listed</div>
+                            <div class="verdict">AI valuation in progress. <strong>Estimated eligible: ₹1,15,000 –
+                                    ₹1,30,000.</strong> Two items (laptop, DSLR) require original purchase receipts for
+                                serial number verification per clause 12.1(c). Document request sent.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pages = ['landing', 'dashboard', 'risk', 'research', 'insurance'];
+        function showPage(id) { pages.forEach(p => document.getElementById(p).classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0, 0); if (id === 'dashboard') initDash(); if (id === 'risk') initRisk(); }
+        function setActive(idx) { document.querySelectorAll('.tnav-btn').forEach((b, i) => b.classList.toggle('active', i === idx)); }
+
+        let dashDone = false;
+        function initDash() {
+            if (dashDone) return; dashDone = true;
+            new Chart(document.getElementById('cashflow').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'], datasets: [
+                        { label: 'Income', data: [95000, 95000, 105000, 95000, 95000, 95000], backgroundColor: '#3a7a5b', borderRadius: 2 },
+                        { label: 'Expenses', data: [61200, 58400, 74100, 82000, 49300, 42810], backgroundColor: '#c4720a', borderRadius: 2 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#8a8078', font: { size: 10, family: 'IBM Plex Mono' }, boxWidth: 10 } } }, scales: { x: { ticks: { color: '#8a8078', font: { size: 10, family: 'IBM Plex Mono' } }, grid: { color: '#e8e2d8' } }, y: { ticks: { color: '#8a8078', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => '₹' + (v / 1000).toFixed(0) + 'K' }, grid: { color: '#e8e2d8' } } } }
+            });
+            new Chart(document.getElementById('spend').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: ['EMI', 'Groceries', 'Travel', 'Dining', 'Utilities', 'Other'], datasets: [{ data: [32, 18, 15, 12, 10, 13], backgroundColor: ['#1a1714', '#c4720a', '#3d5a73', '#2a7a4b', '#b83232', '#8a8078'], borderWidth: 0, hoverOffset: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'right', labels: { color: '#4a4540', font: { size: 10, family: 'IBM Plex Mono' }, boxWidth: 10, padding: 8 } } } }
+            });
+        }
+
+        let riskDone = false;
+        function initRisk() {
+            if (riskDone) return; riskDone = true;
+            new Chart(document.getElementById('riskTrend').getContext('2d'), {
+                type: 'line',
+                data: { labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'], datasets: [{ data: [45, 52, 48, 58, 61, 55, 67], borderColor: '#c4720a', borderWidth: 1.5, tension: 0.4, fill: false, pointRadius: 2, pointBackgroundColor: '#c4720a' }] },
+                options: { responsive: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false } } }
+            });
+        }
+
+        const replies = ['Your debt-to-income ratio sits at 28%, which is within conservative bounds. The unknown merchant charge on Feb 19 is your most urgent item — if you did not make that transaction, filing a dispute today will accelerate refund processing.', 'Your EMI repayments account for 32% of monthly outflows. Your savings rate of 34.2% is holding, but further discretionary spend could compress that. Consider reviewing subscriptions and dining limits.', 'Your CIBIL score is 748, which qualifies for preferential rates at most banks. The flagged transaction has not been reported to bureaus yet — resolving it in the next 7 days will protect your credit profile.', 'Portfolio growth this month came primarily from your Nifty index fund (+4.1%) and Infosys allocation. Fixed income exposure is providing stability, down only 0.2% this month.'];
+        let ri = 0;
+        function sendMsg() { const inp = document.getElementById('chatIn'); const box = document.getElementById('msgs'); const t = inp.value.trim(); if (!t) return; const um = document.createElement('div'); um.className = 'msg-u'; um.textContent = t; box.appendChild(um); inp.value = ''; setTimeout(() => { const am = document.createElement('div'); am.className = 'msg-a'; am.textContent = replies[ri++ % replies.length]; box.appendChild(am); box.scrollTop = box.scrollHeight; }, 700); box.scrollTop = box.scrollHeight; }
+
+        const answers = ['The two primary risks are European macro softness (potential 10–15% impact on Q4 deal closures, per CFO, p. 12) and sustained attrition at 13.7% TTM, above pre-2023 norms. Management did not quantify specific mitigation for either.', 'Infosys reported 21.3% operating margin in Q3 FY26, up 120bps QoQ. Drivers: lower subcontracting costs and rupee tailwinds. Q4 guidance maintained at 20–22%.', 'Large deal TCV of $2.4B is the strongest indicator — highest in six quarters, well above the $1.6–1.9B range in preceding periods. Financial services and energy are the key verticals.'];
+        let ai = 0;
+        function askDoc() { const inp = document.getElementById('askIn'); const ans = document.getElementById('askAns'); if (!inp.value.trim()) return; ans.style.display = 'block'; ans.textContent = 'Searching indexed document…'; inp.value = ''; setTimeout(() => { ans.textContent = answers[ai++ % answers.length]; }, 800); }
+
+        document.querySelectorAll('.tab-btn').forEach(b => { b.addEventListener('click', () => { b.closest('.tab-row').querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active')); b.classList.add('active'); }); });
+    </script>
+</body>
+
+</html>
